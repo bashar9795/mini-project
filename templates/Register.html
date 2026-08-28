@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account — SkillSwap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-mark">S</span>
+                <span>SkillSwap</span>
+            </a>
+            <div class="nav-actions">
+                <span style="font-size:13px; color:var(--ink-faint);">Already have an account? <a href="{{ url_for('login') }}" style="color:var(--learn); font-weight:600;">Login</a></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-shell">
+        <div class="auth-card">
+
+            <div class="auth-card-top">
+                <div class="auth-stub-mark">S</div>
+                <h1>Create your ticket</h1>
+                <p class="subtitle">Set up your account — you'll add skills next.</p>
+            </div>
+
+            <div class="auth-perf"></div>
+
+            <div class="alert alert-error" id="errorMsg"></div>
+            <div class="alert alert-success" id="successMsg"></div>
+
+            <form id="registerForm" class="auth-form">
+                <div class="field">
+                    <label for="name">Full name</label>
+                    <input type="text" id="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="field">
+                    <label for="email">College email</label>
+                    <input type="email" id="email" placeholder="you@college.edu" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password" required minlength="4">
+                </div>
+
+                <button type="submit" class="auth-submit">Create account</button>
+            </form>
+
+            <p class="auth-switch" style="padding-bottom:26px;">
+                Already have an account? <a href="{{ url_for('login') }}">Login</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

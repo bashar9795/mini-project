@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap — Trade skills with your college</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <span class="logo-mark">S</span>
+                <span>SkillSwap</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="{{ url_for('login') }}" class="nav-login">Login</a>
+                <a href="{{ url_for('register') }}" class="btn-primary">Get started</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ================= HERO ================= -->
+        <section class="hero" id="home">
+            <div class="hero-container">
+
+                <div class="hero-copy">
+                    <span class="eyebrow">✦ AI-powered student skill exchange</span>
+
+                    <h1>
+                        Trade what you know <br>
+                        for what you <span class="accent-learn">want to learn.</span>
+                    </h1>
+
+                    <p class="lead">
+                        Every student on campus already knows something worth teaching.
+                        SkillSwap matches you with a peer whose skills complete yours —
+                        so you both walk away having taught, and having learned.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="{{ url_for('register') }}" class="btn-primary">Find my learning partner →</a>
+                        <a href="#how-it-works" class="btn-secondary">See how it works</a>
+                    </div>
+
+                    <div class="hero-footnote">
+                        <span class="dot"></span>
+                        Matched by semantic AI, not just keyword search
+                    </div>
+                </div>
+
+                <!-- Signature element: the swap ticket -->
+                <div class="hero-visual">
+                    <div class="ticket">
+
+                        <div class="ticket-top">
+                            <span class="ticket-id">TICKET #0231 · CSE DEPT</span>
+                            <span class="ticket-score">94% match</span>
+                        </div>
+
+                        <div class="ticket-person">
+                            <div class="ticket-avatar">A</div>
+                            <div>
+                                <h3>Aisha Khan</h3>
+                                <p>Computer Science · 3rd year</p>
+                            </div>
+                        </div>
+
+                        <div class="ticket-split">
+                            <div class="ticket-notch top"></div>
+
+                            <div class="ticket-side teach">
+                                <span class="side-label">Aisha teaches</span>
+                                <div class="ticket-tags">
+                                    <span>python</span>
+                                    <span>machine-learning</span>
+                                    <span>pandas</span>
+                                </div>
+                            </div>
+
+                            <div class="ticket-side learn">
+                                <span class="side-label">Aisha wants to learn</span>
+                                <div class="ticket-tags">
+                                    <span>c++</span>
+                                    <span>embedded-systems</span>
+                                </div>
+                            </div>
+
+                            <div class="ticket-notch bottom"></div>
+                        </div>
+
+                        <div class="ticket-reason">
+                            <p class="title">Why this match</p>
+                            <div class="reason-row">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#147D77" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                You want to learn Python
+                            </div>
+                            <div class="reason-row">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="#147D77" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                You can teach C++ and embedded systems
+                            </div>
+                        </div>
+
+                        <div class="ticket-cta">
+                            <button type="button">View this match</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+        <section class="section" id="how-it-works">
+            <div class="section-inner">
+
+                <div class="section-head center">
+                    <span class="eyebrow">How it works</span>
+                    <h2>From profile to partner in four steps.</h2>
+                    <p>Every match starts as a ticket — filled out, matched, and torn in two: your half, and theirs.</p>
+                </div>
+
+                <div class="stub-row">
+
+                    <div class="stub">
+                        <span class="stub-num">01</span>
+                        <div class="stub-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#1C1B18" stroke-width="1.8"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </div>
+                        <h3>Create your profile</h3>
+                        <p>Tell us your year, department, and how you like to learn — one card, filled out once.</p>
+                    </div>
+
+                    <div class="stub">
+                        <span class="stub-num">02</span>
+                        <div class="stub-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 8h16M4 16h16" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="8" r="2.2" fill="#1C1B18"/><circle cx="16" cy="16" r="2.2" fill="#1C1B18"/></svg>
+                        </div>
+                        <h3>List teach &amp; learn skills</h3>
+                        <p>Add what you can teach and what you're chasing — in your own words, not a fixed dropdown.</p>
+                    </div>
+
+                    <div class="stub">
+                        <span class="stub-num">03</span>
+                        <div class="stub-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <h3>AI finds your match</h3>
+                        <p>Semantic matching reads what you mean, not just what you typed, and scores every possible pair.</p>
+                    </div>
+
+                    <div class="stub">
+                        <span class="stub-num">04</span>
+                        <div class="stub-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 12l3 3 6-6" stroke="#1C1B18" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#1C1B18" stroke-width="1.8"/></svg>
+                        </div>
+                        <h3>Connect &amp; trade</h3>
+                        <p>Send a request, get accepted, and start exchanging — you're teaching and learning at once.</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= FEATURES ================= -->
+        <section class="features-section" id="features">
+            <div class="section" style="padding-top:96px; padding-bottom:96px;">
+                <div class="section-inner">
+
+                    <div class="section-head center">
+                        <span class="eyebrow">Why SkillSwap</span>
+                        <h2>Built for how students actually learn from each other.</h2>
+                    </div>
+
+                    <div class="features-grid">
+
+                        <div class="feature-card">
+                            <div class="f-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z" fill="white"/></svg>
+                            </div>
+                            <h3>Semantic AI matching</h3>
+                            <p>Mention "microcontroller programming" and we'll still connect you with someone into STM32 or embedded systems — no exact keyword required.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="f-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                            <h3>Two-way exchange</h3>
+                            <p>Every profile has two sides. You're never just a learner or just a tutor — you bring something to the trade too.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="f-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.8"/><circle cx="12" cy="12" r="1" fill="white"/></svg>
+                            </div>
+                            <h3>A real match score</h3>
+                            <p>Every recommendation comes with a compatibility score and the plain-English reasons behind it, so you know why it's a fit.</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="f-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v12H8l-4 4V4z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                            </div>
+                            <h3>Built for your campus</h3>
+                            <p>Every match is a student from your own college — same courses, same schedule, walking distance away.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= CTA ================= -->
+        <section class="cta-section" id="about">
+            <div class="cta-inner">
+                <span class="eyebrow">Start learning differently</span>
+                <h2>Someone on your campus already knows what you're trying to learn.</h2>
+                <p>Fill out your ticket, get matched, and make the trade.</p>
+                <a href="{{ url_for('register') }}" class="btn-primary">Get started free →</a>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>© 2026 SkillSwap. Built for student collaboration.</p>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#features">Features</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
