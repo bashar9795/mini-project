@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Partners — SkillSwap</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+        .match-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .match-card {
+            padding: 22px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            background: white;
+        }
+
+        .match-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .match-card p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 11px;
+            margin: 4px 3px;
+            border-radius: 20px;
+            background: #e5f3ff;
+            color: #1766a5;
+            font-size: 13px;
+        }
+
+        .match-score {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #16834a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 35px 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-mark">S</span>
+            <span>SkillSwap</span>
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="{{ url_for('dashboard') }}" class="nav-login">Dashboard</a>
+            <a href="{{ url_for('messages_inbox') }}" class="nav-login">Messages</a>
+
+            <button type="button"
+                    class="auth-submit logout-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="auth-shell">
+
+    <div class="auth-card" style="width:100%; max-width:950px;">
+
+        <div class="auth-card-top">
+
+            <div class="auth-stub-mark">S</div>
+
+            <h1>Find Learning Partners</h1>
+
+            <p class="subtitle">
+                Discover students who can teach the skills you want to learn.
+            </p>
+
+        </div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} show">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+
+        {% if matches %}
+
+            <h3>{{ matches|length }} Learning Partner(s) Found</h3>
+
+            <div class="match-list">
+
+                {% for student in matches %}
+
+                    <div class="match-card">
+
+                        <h3>{{ student.name }}</h3>
+
+                        <p>
+                            <strong>College:</strong>
+                            {{ student.college }}
+                        </p>
+
+                        <p>
+                            <strong>Department:</strong>
+                            {{ student.department }}
+                        </p>
+
+                        <p>
+                            <strong>Academic Year:</strong>
+                            {{ student.academic_year }}
+                        </p>
+
+                        <p>
+                            <strong>About:</strong>
+                            {{ student.bio }}
+                        </p>
+
+                        <hr>
+
+                        <p>
+                            <strong>Can teach:</strong>
+                        </p>
+
+                        {% for skill in student.teach_skills.split(',') %}
+                            <span class="skill-tag">
+                                {{ skill.strip() }}
+                            </span>
+                        {% endfor %}
+
+                        <p>
+                            <strong>Skills you both match:</strong>
+                        </p>
+
+                        {% for skill in student.matching_skills %}
+                            <span class="skill-tag">
+                                {{ skill }}
+                            </span>
+                        {% endfor %}
+
+                        <p class="match-score">
+                            {{ student.match_count }} matching skill(s)
+                            ({{ student.match_percentage }}%)
+                        </p>
+
+                        <a href="{{ url_for('chat', partner_id=student.user_id) }}"
+                           class="auth-submit"
+                           style="display:inline-flex; align-items:center; justify-content:center; width:auto; padding:0 16px; text-decoration:none; margin-top:12px;">
+                            Message {{ student.name.split(' ')[0] }}
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <h2>No learning partners found yet.</h2>
+
+                <p>
+                    We couldn't find students who teach the skills
+                    you currently want to learn.
+                </p>
+
+                <p>
+                    Try updating your learning skills or check again
+                    when more students join SkillSwap.
+                </p>
+
+                <a href="{{ url_for('profile') }}"
+                   class="auth-submit"
+                   style="display:inline-block; text-decoration:none; margin-top:15px;">
+                    Update My Skills
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

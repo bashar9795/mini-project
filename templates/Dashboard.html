@@ -1,53 +1,217 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard — SkillSwap</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
 </head>
+
 <body>
 
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="logo">
-                <span class="logo-mark">S</span>
-                <span>SkillSwap</span>
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-mark">S</span>
+            <span>SkillSwap</span>
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="{{ url_for('messages_inbox') }}" class="nav-login">Messages</a>
+
+            <a href="{{ url_for('profile') }}" class="auth-submit">
+                Edit Profile
             </a>
+
+            <button type="button"
+                    class="auth-submit logout-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
+
         </div>
-    </header>
 
-    <main class="auth-shell">
-        <div class="auth-card dash-card">
+    </div>
 
-            <div class="dash-header">
-                <div class="dash-avatar" id="avatarLetter">S</div>
-                <div>
-                    <h1>Welcome, <span id="userName">Student</span></h1>
-                    <p>You're logged in to SkillSwap</p>
-                </div>
+</header>
+
+
+<!-- DASHBOARD -->
+
+<main class="auth-shell">
+
+    <div class="auth-card profile-card">
+
+        <!-- WELCOME -->
+
+        <div class="auth-card-top">
+
+            <div class="auth-stub-mark">
+                S
             </div>
 
-            <div class="dash-body">
-                <div class="dash-info">
-                    <div class="row"><span>Name</span><span id="profileName"></span></div>
-                    <div class="row"><span>Email</span><span id="profileEmail"></span></div>
-                </div>
+            <h1>
+                Welcome, {{ profile.name if profile else user_name }}!
+            </h1>
 
-                <p class="dash-note">
-                    This is a placeholder dashboard. The next build step, per the project plan,
-                    is a skill form (teach / learn) and the AI matching engine that turns your
-                    profile into a ranked list of swap tickets like the one on the homepage.
-                </p>
+            <p class="subtitle">
+                You're logged in to SkillSwap.
+                Start sharing your skills and finding learning partners.
+            </p>
 
-                <button class="auth-submit logout-btn" id="logoutBtn">Logout</button>
-            </div>
         </div>
-    </main>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+        <div class="auth-perf"></div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} show">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+
+        {% if profile %}
+
+            <!-- PERSONAL INFORMATION -->
+
+            <h3>Personal Information</h3>
+
+            <div class="field">
+                <label>Full Name</label>
+                <p>{{ profile.name }}</p>
+            </div>
+
+            <div class="field">
+                <label>Email</label>
+                <p>{{ user_email }}</p>
+            </div>
+
+            <div class="field">
+                <label>College / University</label>
+                <p>{{ profile.college }}</p>
+            </div>
+
+            <div class="field">
+                <label>Department</label>
+                <p>{{ profile.department }}</p>
+            </div>
+
+            <div class="field">
+                <label>Academic Year</label>
+                <p>{{ profile.academic_year }}</p>
+            </div>
+
+            <div class="field">
+                <label>About Me</label>
+                <p>{{ profile.bio }}</p>
+            </div>
+
+
+            <div class="auth-perf"></div>
+
+
+            <!-- SKILLS -->
+
+            <h3>My Skills</h3>
+
+            <div class="field">
+
+                <label>Skills I Can Teach</label>
+
+                <p>{{ profile.teach_skills }}</p>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Skills I Want To Learn</label>
+
+                <p>{{ profile.learn_skills }}</p>
+
+            </div>
+
+
+            <div class="auth-perf"></div>
+
+
+            <!-- ACTIONS -->
+
+            <a href="{{ url_for('profile') }}"
+               class="auth-submit"
+               style="display:block; text-align:center; text-decoration:none;">
+
+                Edit My Profile →
+
+            </a>
+
+
+        {% else %}
+
+            <h3>Complete your profile</h3>
+
+            <p class="subtitle">
+                You haven't created your profile yet.
+                Add your college information and skills to get started.
+            </p>
+
+            <a href="{{ url_for('profile') }}"
+               class="auth-submit"
+               style="display:block; text-align:center; text-decoration:none;">
+
+                Create My Profile →
+
+            </a>
+
+        {% endif %}
+
+    </div>
+    <div style="margin-top:25px;">
+
+    <a href="{{ url_for('matches') }}"
+       class="auth-submit"
+       style="display:inline-block; text-decoration:none;">
+
+        Find Learning Partners →
+
+    </a>
+
+    <a href="{{ url_for('messages_inbox') }}"
+       class="auth-submit"
+       style="display:inline-block; text-decoration:none; margin-left:12px;">
+
+        Open Messages →
+
+    </a>
+
+</div>
+
+</main>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </body>
+
 </html>

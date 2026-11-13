@@ -1,92 +1,155 @@
-// ============================================================
-// SkillSwap — Auth logic
-// Uses browser localStorage so the whole flow works without a
-// backend yet. When you build the Flask + MySQL API from the
-// synopsis, swap the localStorage calls below for fetch() calls
-// to your endpoints — the form markup stays the same.
-// ============================================================
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem("skillswap_users") || "[]");
-}
-
-function saveUsers(users) {
-  localStorage.setItem("skillswap_users", JSON.stringify(users));
-}
+// ============================================================
+// SkillSwap — Frontend JavaScript
+// Authentication is handled by Flask + MySQL.
+// Do NOT use localStorage for login or user authentication.
+// ============================================================
 
 function showAlert(id, msg) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add("show");
+    const el = document.getElementById(id);
+
+    if (!el) return;
+
+    el.textContent = msg;
+    el.classList.add("show");
 }
 
-// ---- Register ----
+// ============================================================
+// REGISTER PAGE
+// ============================================================
+
+// Registration is submitted directly to Flask.
+// Flask validates the data and saves the user in MySQL.
+// Do not prevent the form's normal submission.
+
 const registerForm = document.getElementById("registerForm");
+
 if (registerForm) {
-  registerForm.addEventListener("submit", function (e) {
-    e.preventDefault();
+    registerForm.addEventListener("submit", function () {
+        const password = document.getElementById("password");
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const password = document.getElementById("password").value;
-
-    const users = getUsers();
-
-    if (users.some((u) => u.email === email)) {
-      showAlert("errorMsg", "An account with this email already exists.");
-      return;
-    }
-
-    users.push({ name, email, password });
-    saveUsers(users);
-
-    showAlert("successMsg", "Account created! Redirecting to login...");
-    setTimeout(() => {
-      window.location.href = "login";
-    }, 1100);
-  });
+        if (password && password.value.length < 6) {
+            // Let HTML/Flask handle validation as appropriate.
+            // No localStorage authentication is performed here.
+        }
+    });
 }
 
-// ---- Login ----
+// ============================================================
+// LOGIN PAGE
+// ============================================================
+
+// Login is submitted directly to Flask.
+// Flask checks the password and creates the session.
+// Flask decides where to redirect after successful login.
+
 const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
-  loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const password = document.getElementById("password").value;
-
-    const users = getUsers();
-    const match = users.find((u) => u.email === email && u.password === password);
-
-    if (!match) {
-      showAlert("errorMsg", "Invalid email or password.");
-      return;
-    }
-
-    localStorage.setItem("skillswap_current_user", JSON.stringify(match));
-    window.location.href = "dashboard";
-  });
+    loginForm.addEventListener("submit", function () {
+        // Do not call preventDefault().
+        // Do not check credentials in JavaScript.
+    });
 }
 
-// ---- Dashboard ----
+// ============================================================
+// DASHBOARD PAGE
+// ============================================================
+
+// User information should come from Flask/Jinja,
+// not from browser localStorage.
+
 const logoutBtn = document.getElementById("logoutBtn");
+
 if (logoutBtn) {
-  const current = JSON.parse(localStorage.getItem("skillswap_current_user") || "null");
+    logoutBtn.addEventListener("click", function () {
+        window.location.href = "/logout";
+    });
+}
 
-  if (!current) {
-    window.location.href = "login";
-  } else {
-    const firstName = current.name.split(" ")[0];
-    document.getElementById("userName").textContent = firstName;
-    document.getElementById("profileName").textContent = current.name;
-    document.getElementById("profileEmail").textContent = current.email;
-    document.getElementById("avatarLetter").textContent = firstName.charAt(0).toUpperCase();
-  }
+// ============================================================
+// PROFILE PAGE
+// ============================================================
 
-  logoutBtn.addEventListener("click", function () {
-    localStorage.removeItem("skillswap_current_user");
-    window.location.href = "login";
-  });
+// Flask should populate profile fields using Jinja.
+// Profile form submission must be handled by a Flask POST route.
+// Do not load or save profile information using localStorage.
+
+const profileForm = document.getElementById("profileForm");
+
+if (profileForm) {
+    profileForm.addEventListener("submit", function () {
+        // Allow normal form submission to Flask.
+        // Do not call preventDefault().
+    });
+}
+
+// ============================================================
+// COMMUNICATION WINDOW
+// ============================================================
+
+const chatThread = document.getElementById("chatThread");
+
+function appendChatMessage(item) {
+    const empty = document.getElementById("chatEmpty");
+    if (empty) {
+        empty.remove();
+    }
+
+    const article = document.createElement("article");
+    article.className = "bubble" + (item.mine ? " mine" : "");
+
+    if (item.body) {
+        const text = document.createElement("p");
+        text.textContent = item.body;
+        article.appendChild(text);
+    }
+
+    if (item.file_name && item.file_url) {
+        const link = document.createElement("a");
+        link.href = item.file_url;
+        link.textContent = item.file_name;
+        if (item.is_image) {
+            link.target = "_blank";
+            link.rel = "noopener";
+            const image = document.createElement("img");
+            image.src = item.file_url;
+            image.alt = item.file_name;
+            link.textContent = "";
+            link.appendChild(image);
+        }
+        article.appendChild(link);
+    }
+
+    const time = document.createElement("time");
+    time.textContent = item.created_at || "";
+    article.appendChild(time);
+    chatThread.appendChild(article);
+}
+
+if (chatThread) {
+    chatThread.scrollTop = chatThread.scrollHeight;
+    const partnerId = chatThread.dataset.partnerId;
+
+    window.setInterval(function () {
+        const after = chatThread.dataset.after || "0";
+        fetch("/chat/" + partnerId + "/updates?after=" + encodeURIComponent(after))
+            .then(function (response) {
+                if (!response.ok) {
+                    return [];
+                }
+                return response.json();
+            })
+            .then(function (items) {
+                if (!Array.isArray(items) || items.length === 0) {
+                    return;
+                }
+                items.forEach(appendChatMessage);
+                chatThread.dataset.after = String(items[items.length - 1].id);
+                chatThread.scrollTop = chatThread.scrollHeight;
+            })
+            .catch(function () {
+                // Keep the open conversation usable if a refresh fails.
+            });
+    }, 4000);
 }

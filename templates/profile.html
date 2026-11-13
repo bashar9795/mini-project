@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile — SkillSwap</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="nav-container">
+
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-mark">S</span>
+            <span>SkillSwap</span>
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="{{ url_for('messages_inbox') }}" class="nav-login">Messages</a>
+
+            <button type="button"
+                    class="auth-submit logout-btn"
+                    id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ================= PROFILE FORM ================= -->
+
+<main class="auth-shell">
+
+    <div class="auth-card profile-card">
+
+        <div class="auth-card-top">
+
+            <div class="auth-stub-mark">S</div>
+
+            <h1>
+                {% if profile_data %}
+                    Update your profile
+                {% else %}
+                    Build your profile
+                {% endif %}
+            </h1>
+
+            <p class="subtitle">
+                Tell us about yourself and find your perfect learning partner.
+            </p>
+
+        </div>
+
+
+        <div class="auth-perf"></div>
+
+
+        <!-- Flask flash messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }} show">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+
+        <!-- ================= FORM ================= -->
+
+        <form id="profileForm"
+              class="auth-form"
+              method="POST"
+              action="{{ url_for('profile') }}">
+
+
+            <!-- PERSONAL INFORMATION -->
+
+            <h3>Personal information</h3>
+
+
+            <!-- Full name -->
+
+            <div class="field">
+
+                <label for="profileFullName">
+                    Full name
+                </label>
+
+                <input
+                    type="text"
+                    id="profileFullName"
+                    name="name"
+                    value="{{ profile_data.name if profile_data else user_name }}"
+                    placeholder="Enter your full name"
+                    maxlength="100"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="field">
+
+                <label for="profileEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="profileEmail"
+                    name="email"
+                    value="{{ user_email }}"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- College -->
+
+            <div class="field">
+
+                <label for="college">
+                    College / University
+                </label>
+
+                <input
+                    type="text"
+                    id="college"
+                    name="college"
+                    value="{{ profile_data.college if profile_data else '' }}"
+                    placeholder="Enter your college name"
+                    maxlength="255"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Department -->
+
+            <div class="field">
+
+                <label for="department">
+                    Department
+                </label>
+
+                <select id="department"
+                        name="department"
+                        required>
+
+                    <option value="">
+                        Select department
+                    </option>
+
+                    {% for dept in [
+                        'Computer Science',
+                        'Information Technology',
+                        'Electronics and Communication',
+                        'Electrical Engineering',
+                        'Mechanical Engineering',
+                        'Civil Engineering',
+                        'Other'
+                    ] %}
+
+                        <option value="{{ dept }}"
+                            {% if profile_data and profile_data.department == dept %}
+                                selected
+                            {% endif %}>
+
+                            {{ dept }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Academic year -->
+
+            <div class="field">
+
+                <label for="year">
+                    Academic year
+                </label>
+
+                <select id="year"
+                        name="year"
+                        required>
+
+                    <option value="">
+                        Select your year
+                    </option>
+
+                    {% for y in [
+                        '1st Year',
+                        '2nd Year',
+                        '3rd Year',
+                        '4th Year',
+                        'Postgraduate'
+                    ] %}
+
+                        <option value="{{ y }}"
+                            {% if profile_data and profile_data.academic_year == y %}
+                                selected
+                            {% endif %}>
+
+                            {{ y }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Bio -->
+
+            <div class="field">
+
+                <label for="bio">
+                    About yourself
+                </label>
+
+                <textarea
+                    id="bio"
+                    name="bio"
+                    rows="4"
+                    placeholder="Tell other students about yourself, your interests and experience..."
+                    required>{{ profile_data.bio if profile_data else '' }}</textarea>
+
+            </div>
+
+
+            <div class="auth-perf"></div>
+
+
+            <!-- SKILLS -->
+
+            <h3>Your skills</h3>
+
+
+            <!-- Teaching skills -->
+
+            <div class="field">
+
+                <label for="teachSkills">
+                    Skills you can teach
+                </label>
+
+                <textarea
+                    id="teachSkills"
+                    name="teachSkills"
+                    rows="3"
+                    placeholder="Example: Python, C++, STM32, Web Development"
+                    required>{{ profile_data.teach_skills if profile_data else '' }}</textarea>
+
+                <small>
+                    Separate multiple skills using commas.
+                </small>
+
+            </div>
+
+
+            <!-- Learning skills -->
+
+            <div class="field">
+
+                <label for="learnSkills">
+                    Skills you want to learn
+                </label>
+
+                <textarea
+                    id="learnSkills"
+                    name="learnSkills"
+                    rows="3"
+                    placeholder="Example: Machine Learning, UI/UX, Robotics"
+                    required>{{ profile_data.learn_skills if profile_data else '' }}</textarea>
+
+                <small>
+                    Separate multiple skills using commas.
+                </small>
+
+            </div>
+
+
+            <!-- SAVE BUTTON -->
+
+            <button type="submit" class="auth-submit">
+
+                {% if profile_data %}
+                    Update my profile →
+                {% else %}
+                    Save my profile →
+                {% endif %}
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% if partner %}Chat with {{ partner.name }}{% else %}Messages{% endif %} — SkillSwap</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-mark">S</span>
+            <span>SkillSwap</span>
+        </a>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('dashboard') }}" class="nav-login">Dashboard</a>
+            <a href="{{ url_for('matches') }}" class="nav-login">Partners</a>
+            <button type="button" class="auth-submit logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+</header>
+
+<main class="auth-shell">
+    <div class="auth-card chat-shell">
+        <div class="auth-card-top">
+            <div class="auth-stub-mark">S</div>
+            <h1>Communication window</h1>
+            <p class="subtitle">
+                Share text, notes, and files with another SkillSwap student.
+                Only the two of you can see this conversation.
+            </p>
+        </div>
+
+        {% with messages_flash = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages_flash %}
+                <div class="alert alert-{{ category }} show">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="chat-layout">
+            <aside class="chat-list">
+                <h2>Conversations</h2>
+                {% if conversations %}
+                    {% for person in conversations %}
+                        <a class="chat-person {% if partner and partner.id == person.id %}active{% endif %}"
+                           href="{{ url_for('chat', partner_id=person.id) }}">
+                            <strong>
+                                {{ person.name }}
+                                {% if person.unread %}
+                                    <span class="unread-dot">{{ person.unread }}</span>
+                                {% endif %}
+                            </strong>
+                            <span>{{ person.preview or "No messages yet" }}</span>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <p class="chat-note" style="padding: 0 16px 16px;">
+                        No conversations yet. Open a learning partner and start one.
+                    </p>
+                {% endif %}
+            </aside>
+
+            <section class="chat-window">
+                {% if partner %}
+                    <div class="chat-head">
+                        <h2>{{ partner.name }}</h2>
+                        <p>
+                            {% if partner.college %}{{ partner.college }}{% endif %}
+                            {% if partner.department %} · {{ partner.department }}{% endif %}
+                        </p>
+                    </div>
+
+                    <div class="chat-thread"
+                         id="chatThread"
+                         data-partner-id="{{ partner.id }}"
+                         data-after="{{ messages[-1].id if messages else 0 }}">
+                        {% if messages %}
+                            {% for item in messages %}
+                                <article class="bubble {% if item.sender_id == session['user_id'] %}mine{% endif %}">
+                                    {% if item.body %}
+                                        <p>{{ item.body }}</p>
+                                    {% endif %}
+                                    {% if item.file_name %}
+                                        {% set extension = item.file_name.rsplit('.', 1)[-1]|lower %}
+                                        {% if extension in ['png', 'jpg', 'jpeg', 'gif', 'webp'] %}
+                                            <a href="{{ url_for('chat_file', message_id=item.id) }}" target="_blank" rel="noopener">
+                                                <img src="{{ url_for('chat_file', message_id=item.id) }}" alt="{{ item.file_name }}">
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('chat_file', message_id=item.id) }}">{{ item.file_name }}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <time>{{ item.created_at.strftime('%d %b, %I:%M %p') if item.created_at else '' }}</time>
+                                </article>
+                            {% endfor %}
+                        {% else %}
+                            <p class="chat-empty" id="chatEmpty">
+                                Send a message or share a file to start.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <form class="chat-form" method="post" enctype="multipart/form-data"
+                          action="{{ url_for('chat', partner_id=partner.id) }}">
+                        <textarea name="body" maxlength="4000" placeholder="Write a message, share notes, or describe a file..."></textarea>
+                        <input type="file" name="attachment"
+                               accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.doc,.docx,.ppt,.pptx">
+                        <button type="submit" class="auth-submit">Send</button>
+                        <p class="chat-note">PDF, images, text, Word, and PowerPoint files up to 8 MB.</p>
+                    </form>
+                {% else %}
+                    <div class="chat-head">
+                        <h2>Choose a student</h2>
+                        <p>Pick a conversation, or message someone from your learning partners.</p>
+                    </div>
+                    <div class="chat-thread">
+                        <p class="chat-empty">
+                            Your shared messages and files will appear here.
+                        </p>
+                    </div>
+                    <div class="chat-form">
+                        <a href="{{ url_for('matches') }}" class="auth-submit" style="width:auto; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+                            Find someone to message
+                        </a>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
